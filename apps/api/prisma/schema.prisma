@@ -1,13 +1,101 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client"
-  output   = "../generated/prisma"
+  output   = "../src/generated"
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+enum Role {
+  USER
+  AGENT
+  ADMIN
+}
+
+enum QueueKind {
+  INTERNAL
+  EXTERNAL
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum TicketSource {
+  WEB
+  SMS
+  EMAIL
+}
+
+model User {
+  id        String   @id @default(uuid())
+  auth0Id   String?  @unique
+  email     String   @unique
+  name      String
+  phone     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  role Role @default(USER)
+
+  teamId          String?
+  team            Team?     @relation(fields: [teamId], references: [id])
+  createdTickets  Ticket[]  @relation("TicketCreator")
+  assignedTickets Ticket[]  @relation("TicketAgent")
+  comments        Comment[]
+}
+
+model Team {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  kind QueueKind @default(INTERNAL)
+
+  agents  User[]
+  tickets Ticket[]
+}
+
+model Ticket {
+  id        String   @id @default(uuid())
+  title     String
+  body      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  status   TicketStatus @default(OPEN)
+  priority Priority     @default(MEDIUM)
+  source   TicketSource @default(WEB)
+
+  teamId    String?
+  team      Team?     @relation(fields: [teamId], references: [id])
+  creatorId String
+  creator   User      @relation("TicketCreator", fields: [creatorId], references: [id])
+  agentId   String?
+  agent     User?     @relation("TicketAgent", fields: [agentId], references: [id])
+  comments  Comment[]
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  body      String
+  internal  Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  ticketId String
+  ticket   Ticket @relation(fields: [ticketId], references: [id])
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id])
 }
