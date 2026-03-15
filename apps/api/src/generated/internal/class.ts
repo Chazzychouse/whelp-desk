@@ -12,7 +12,7 @@
  */
 
 import * as runtime from "@prisma/client/runtime/client"
-import type * as Prisma from "./prismaNamespace.js"
+import type * as Prisma from "./prismaNamespace"
 
 
 const config: runtime.GetPrismaClientConfig = {
@@ -20,7 +20,7 @@ const config: runtime.GetPrismaClientConfig = {
   "clientVersion": "7.5.0",
   "engineVersion": "280c870be64f457428992c43c1f6d557fab6e29e",
   "activeProvider": "postgresql",
-  "inlineSchema": "generator client {\n  provider = \"prisma-client\"\n  output   = \"../src/generated\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nenum Role {\n  USER\n  AGENT\n  ADMIN\n}\n\nenum QueueKind {\n  INTERNAL\n  EXTERNAL\n}\n\nenum TicketStatus {\n  OPEN\n  IN_PROGRESS\n  RESOLVED\n  CLOSED\n}\n\nenum Priority {\n  LOW\n  MEDIUM\n  HIGH\n  URGENT\n}\n\nenum TicketSource {\n  WEB\n  SMS\n  EMAIL\n}\n\nmodel User {\n  id        String   @id @default(uuid())\n  auth0Id   String?  @unique\n  email     String   @unique\n  name      String\n  phone     String?\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  role Role @default(USER)\n\n  teamId          String?\n  team            Team?     @relation(fields: [teamId], references: [id])\n  createdTickets  Ticket[]  @relation(\"TicketCreator\")\n  assignedTickets Ticket[]  @relation(\"TicketAgent\")\n  comments        Comment[]\n}\n\nmodel Team {\n  id        String   @id @default(uuid())\n  name      String   @unique\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  kind QueueKind @default(INTERNAL)\n\n  agents  User[]\n  tickets Ticket[]\n}\n\nmodel Ticket {\n  id        String   @id @default(uuid())\n  title     String\n  body      String\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  status   TicketStatus @default(OPEN)\n  priority Priority     @default(MEDIUM)\n  source   TicketSource @default(WEB)\n\n  teamId    String?\n  team      Team?     @relation(fields: [teamId], references: [id])\n  creatorId String\n  creator   User      @relation(\"TicketCreator\", fields: [creatorId], references: [id])\n  agentId   String?\n  agent     User?     @relation(\"TicketAgent\", fields: [agentId], references: [id])\n  comments  Comment[]\n}\n\nmodel Comment {\n  id        String   @id @default(uuid())\n  body      String\n  internal  Boolean  @default(false)\n  createdAt DateTime @default(now())\n\n  ticketId String\n  ticket   Ticket @relation(fields: [ticketId], references: [id])\n  authorId String\n  author   User   @relation(fields: [authorId], references: [id])\n}\n",
+  "inlineSchema": "generator client {\n  provider     = \"prisma-client\"\n  output       = \"../src/generated\"\n  moduleFormat = \"cjs\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nenum Role {\n  USER\n  AGENT\n  ADMIN\n}\n\nenum QueueKind {\n  INTERNAL\n  EXTERNAL\n}\n\nenum TicketStatus {\n  OPEN\n  IN_PROGRESS\n  RESOLVED\n  CLOSED\n}\n\nenum Priority {\n  LOW\n  MEDIUM\n  HIGH\n  URGENT\n}\n\nenum TicketSource {\n  WEB\n  SMS\n  EMAIL\n}\n\nmodel User {\n  id        String   @id @default(uuid())\n  auth0Id   String?  @unique\n  email     String   @unique\n  name      String\n  phone     String?\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  role Role @default(USER)\n\n  teamId          String?\n  team            Team?     @relation(fields: [teamId], references: [id])\n  createdTickets  Ticket[]  @relation(\"TicketCreator\")\n  assignedTickets Ticket[]  @relation(\"TicketAgent\")\n  comments        Comment[]\n}\n\nmodel Team {\n  id        String   @id @default(uuid())\n  name      String   @unique\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  kind QueueKind @default(INTERNAL)\n\n  agents  User[]\n  tickets Ticket[]\n}\n\nmodel Ticket {\n  id        String   @id @default(uuid())\n  title     String\n  body      String\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  status   TicketStatus @default(OPEN)\n  priority Priority     @default(MEDIUM)\n  source   TicketSource @default(WEB)\n\n  teamId    String?\n  team      Team?     @relation(fields: [teamId], references: [id])\n  creatorId String\n  creator   User      @relation(\"TicketCreator\", fields: [creatorId], references: [id])\n  agentId   String?\n  agent     User?     @relation(\"TicketAgent\", fields: [agentId], references: [id])\n  comments  Comment[]\n}\n\nmodel Comment {\n  id        String   @id @default(uuid())\n  body      String\n  internal  Boolean  @default(false)\n  createdAt DateTime @default(now())\n\n  ticketId String\n  ticket   Ticket @relation(fields: [ticketId], references: [id])\n  authorId String\n  author   User   @relation(fields: [authorId], references: [id])\n}\n",
   "runtimeDataModel": {
     "models": {},
     "enums": {},
@@ -45,10 +45,10 @@ async function decodeBase64AsWasm(wasmBase64: string): Promise<WebAssembly.Modul
 }
 
 config.compilerWasm = {
-  getRuntime: async () => await import("@prisma/client/runtime/query_compiler_fast_bg.postgresql.mjs"),
+  getRuntime: async () => await import("@prisma/client/runtime/query_compiler_fast_bg.postgresql.js"),
 
   getQueryCompilerWasmModule: async () => {
-    const { wasm } = await import("@prisma/client/runtime/query_compiler_fast_bg.postgresql.wasm-base64.mjs")
+    const { wasm } = await import("@prisma/client/runtime/query_compiler_fast_bg.postgresql.wasm-base64.js")
     return await decodeBase64AsWasm(wasm)
   },
 

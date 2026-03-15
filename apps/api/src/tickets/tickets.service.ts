@@ -3,7 +3,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { TicketCreateDto } from './dto/ticket-create.dto';
 import { TicketUpdateDto } from './dto/ticket-update.dto';
 import { CommentCreateDto } from './dto/comment-create.dto';
-import { TicketSource } from '../generated/client.js';
+import { TicketSource } from '../generated/client';
 import { TicketFilterDto } from './dto/ticket-filter.dto';
 import { toWhere } from '../common/utils/prisma-where';
 
