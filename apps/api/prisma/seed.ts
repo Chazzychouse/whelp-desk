@@ -7,12 +7,12 @@ const prisma = new PrismaClient({ adapter });
 
 // Deterministic IDs so the hardcoded dev user ID stays stable across re-seeds
 const SEED_IDS = {
-    itTeam: '00000000-0000-0000-0000-000000000001',
-    csTeam: '00000000-0000-0000-0000-000000000002',
-    admin: '00000000-0000-0000-0000-000000000010',
-    agent1: '00000000-0000-0000-0000-000000000011',
-    agent2: '00000000-0000-0000-0000-000000000012',
-    user1: '00000000-0000-0000-0000-000000000020',
+    itTeam: 'e4d6729a-59a6-4128-a1dd-d51f9f059cd6',
+    csTeam: 'e7e293f1-c6dd-4633-b716-ab50bf64b17b',
+    admin: '35fa6d1e-f882-428b-93c0-085585e07a6e',
+    agent1: '74a1af77-f9bb-486e-aa8c-bf13a82a0ec9',
+    agent2: '114dfec0-290e-4e8a-aded-b328a95bfb33',
+    user1: '6261cc9d-159f-4708-9fc1-da78793a16c8',
 };
 
 async function main() {

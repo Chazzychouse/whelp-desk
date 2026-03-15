@@ -6,7 +6,7 @@ import { CommentCreateDto } from './dto/comment-create.dto';
 import { TicketFilterDto } from './dto/ticket-filter.dto';
 
 // TODO(Chase): Replace with Auth0 user extraction
-const HARDCODED_USER_ID = '00000000-0000-0000-0000-000000000020'; // seed user1
+const HARDCODED_USER_ID = '6261cc9d-159f-4708-9fc1-da78793a16c8'; // seed user1
 
 @Controller('tickets')
 export class TicketsController {
