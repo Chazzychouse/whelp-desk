@@ -1,0 +1,7 @@
+{
+    "name": "whelp-desk",
+    "private": true,
+    "workspaces": [
+        "apps/*"
+    ]
+}
